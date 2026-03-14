@@ -11,6 +11,7 @@ import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hackradar.agents.categorization import CategorizationAgent
+from hackradar.agents.models import create_model_from_settings
 from hackradar.config import get_settings
 from hackradar.repositories.category_repo import CategoryRepository
 from hackradar.repositories.project_repo import ProjectRepository
@@ -54,7 +55,7 @@ class CategorizationService:
             for p in projects
         ]
 
-        agent = CategorizationAgent(model=settings.llm_model)
+        agent = CategorizationAgent(model=create_model_from_settings(settings))
         result = await agent.run(projects=project_dicts, categories=categories)
 
         assignments_map: dict[str, str] = result.get("assignments", {})

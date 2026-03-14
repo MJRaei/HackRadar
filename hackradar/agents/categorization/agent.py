@@ -20,10 +20,7 @@ Output format:
 import logging
 from typing import Any
 
-from google.adk.agents import LlmAgent
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.genai.types import Content, Part
+import railtracks as rt
 
 from hackradar.agents.base import BaseAgent
 from hackradar.agents.categorization.prompts import (
@@ -72,20 +69,11 @@ class CategorizationAgent(BaseAgent):
             mode_instructions=mode_instructions
         )
 
-        agent = LlmAgent(
+        agent = rt.agent_node(
             name="categorization_agent",
-            model=self.model,
-            instruction=system_prompt,
-            tools=[],
-        )
-
-        session_service = InMemorySessionService()
-        runner = Runner(
-            agent=agent, app_name="hackradar_categorizer", session_service=session_service
-        )
-
-        session = await session_service.create_session(
-            app_name="hackradar_categorizer", user_id="system"
+            tool_nodes=[],
+            llm=self.model,
+            system_message=system_prompt,
         )
 
         projects_text = format_projects_input(projects)
@@ -95,15 +83,5 @@ class CategorizationAgent(BaseAgent):
             "Return the JSON categorization result."
         )
 
-        result_text = ""
-        async for event in runner.run_async(
-            user_id="system",
-            session_id=session.id,
-            new_message=Content(role="user", parts=[Part(text=user_message)]),
-        ):
-            if event.is_final_response() and event.content:
-                for part in event.content.parts:
-                    if part.text:
-                        result_text += part.text
-
-        return parse_categorization_output(result_text, projects)
+        result = await rt.call(agent, user_message)
+        return parse_categorization_output(result.text, projects)

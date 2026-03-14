@@ -1,23 +1,22 @@
 """
-ADK-compatible tool wrappers for LlamaIndex retrievers.
+Railtracks-compatible tool wrappers for LlamaIndex retrievers.
 
-The `LlamaIndexRetrievalTool` wraps a LlamaIndex `BaseRetriever` as a
-Google ADK `FunctionTool` so scoring agents can call it to fetch relevant
-code snippets during evaluation.
+`make_retrieval_tool` wraps a LlamaIndex `BaseRetriever` as a Railtracks
+function_node so scoring agents can call it to fetch relevant code snippets.
 """
 
 import logging
 from typing import Any
 
-from google.adk.tools import FunctionTool
+import railtracks as rt
 from llama_index.core.retrievers import BaseRetriever
 
 logger = logging.getLogger(__name__)
 
 
-def make_retrieval_tool(retriever: BaseRetriever, project_id: str) -> FunctionTool:
+def make_retrieval_tool(retriever: BaseRetriever, project_id: str) -> Any:
     """
-    Wrap a LlamaIndex retriever as an ADK FunctionTool.
+    Wrap a LlamaIndex retriever as a Railtracks function_node.
 
     The returned tool has the signature:
         search_project_code(query: str) -> str
@@ -27,12 +26,13 @@ def make_retrieval_tool(retriever: BaseRetriever, project_id: str) -> FunctionTo
 
     Args:
         retriever:   LlamaIndex retriever already configured for a project.
-        project_id:  Used in the tool description for agent clarity.
+        project_id:  Used in log messages for clarity.
 
     Returns:
-        An ADK FunctionTool the agent can invoke.
+        A Railtracks function_node the agent can invoke.
     """
 
+    @rt.function_node
     def search_project_code(query: str) -> str:
         """
         Search the project's source code for passages relevant to the query.
@@ -41,7 +41,7 @@ def make_retrieval_tool(retriever: BaseRetriever, project_id: str) -> FunctionTo
         or architectural patterns before scoring a criterion.
 
         Args:
-            query: A natural-language description of what to look for in the code.
+            query (str): A natural-language description of what to look for in the code.
 
         Returns:
             Concatenated relevant code snippets with file path metadata.
@@ -63,4 +63,4 @@ def make_retrieval_tool(retriever: BaseRetriever, project_id: str) -> FunctionTo
 
         return "\n\n".join(parts)
 
-    return FunctionTool(func=search_project_code)
+    return search_project_code

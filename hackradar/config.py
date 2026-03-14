@@ -13,9 +13,27 @@ class Settings(BaseSettings):
     qdrant_host: str = "localhost"
     qdrant_port: int = 6333
 
-    # LLM (Google ADK)
+    # LLM provider selection
+    # Options: gemini | openai | openai_compatible
+    llm_provider: str = "gemini"
+
+    # Model name — interpreted by the selected provider:
+    #   gemini:            "gemini-2.0-flash", "gemini-2.5-pro", ...
+    #   openai:            "gpt-4o", "gpt-4o-mini", ...
+    #   openai_compatible: "gpt-oss-120b", or any model served by your endpoint
     llm_model: str = "gemini-2.0-flash"
+
+    # Google credentials (required for llm_provider=gemini)
     google_api_key: str = ""
+
+    # OpenAI credentials (required for llm_provider=openai or openai_compatible)
+    openai_api_key: str = "test"
+
+    # Custom base URL for OpenAI-compatible self-hosted endpoints.
+    # Example (GPT-OSS hackathon server):
+    #   https://vjioo4r1vyvcozuj.us-east-2.aws.endpoints.huggingface.cloud/v1
+    # Leave empty when llm_provider=openai (uses OpenAI's default endpoint).
+    openai_base_url: str = ""
 
     # Embedding
     embedding_model: str = "allenai-specter"

@@ -14,6 +14,7 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from qdrant_client import QdrantClient
 
+from hackradar.agents.models import create_model_from_settings
 from hackradar.agents.scoring import ScoringAgent
 from hackradar.config import get_settings
 from hackradar.models.score import Score
@@ -56,7 +57,7 @@ class ScoringService:
         if not projects:
             raise ValueError("No projects found for the provided IDs")
 
-        agent = ScoringAgent(model=settings.llm_model)
+        agent = ScoringAgent(model=create_model_from_settings(settings))
         results: list[Score] = []
 
         for project in projects:

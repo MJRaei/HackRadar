@@ -34,6 +34,7 @@ def parse_scoring_output(
     elif "```" in text:
         text = text.split("```", 1)[1].split("```", 1)[0].strip()
 
+    logger.debug("Parsing scoring output (len=%d): %.300s", len(text), text)
     try:
         data = json.loads(text)
         if "overall_score" not in data and "criterion_scores" in data:

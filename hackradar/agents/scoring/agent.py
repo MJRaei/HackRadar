@@ -22,10 +22,7 @@ Output format:
 import logging
 from typing import Any
 
-from google.adk.agents import LlmAgent
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.genai.types import Content, Part
+import railtracks as rt
 
 from hackradar.agents.base import BaseAgent
 from hackradar.agents.scoring.prompts import SCORING_SYSTEM_PROMPT
@@ -43,7 +40,8 @@ class ScoringAgent(BaseAgent):
     """
     Scores one project against a criteria set using RAG-augmented evaluation.
 
-    The agent is stateless — a new ADK Runner is created per `run()` call.
+    The agent is stateless — a new Railtracks agent_node is created per `run()` call
+    so each invocation gets a fresh retrieval tool bound to the project's collection.
     """
 
     async def run(
@@ -64,18 +62,11 @@ class ScoringAgent(BaseAgent):
         project_id = project.get("id", "unknown")
         retrieval_tool = make_retrieval_tool(retriever, project_id)
 
-        agent = LlmAgent(
+        agent = rt.agent_node(
             name="scoring_agent",
-            model=self.model,
-            instruction=SCORING_SYSTEM_PROMPT,
-            tools=[retrieval_tool],
-        )
-
-        session_service = InMemorySessionService()
-        runner = Runner(agent=agent, app_name="hackradar_scorer", session_service=session_service)
-
-        session = await session_service.create_session(
-            app_name="hackradar_scorer", user_id="system"
+            tool_nodes=[retrieval_tool],
+            llm=self.model,
+            system_message=SCORING_SYSTEM_PROMPT,
         )
 
         user_message = (
@@ -84,15 +75,6 @@ class ScoringAgent(BaseAgent):
             "Please evaluate this project against all criteria and return the JSON result."
         )
 
-        result_text = ""
-        async for event in runner.run_async(
-            user_id="system",
-            session_id=session.id,
-            new_message=Content(role="user", parts=[Part(text=user_message)]),
-        ):
-            if event.is_final_response() and event.content:
-                for part in event.content.parts:
-                    if part.text:
-                        result_text += part.text
-
-        return parse_scoring_output(result_text, criteria, project_id)
+        result = await rt.call(agent, user_message)
+        logger.debug("Raw scoring output for %s:\n%s", project_id, result.text)
+        return parse_scoring_output(result.text, criteria, project_id)
