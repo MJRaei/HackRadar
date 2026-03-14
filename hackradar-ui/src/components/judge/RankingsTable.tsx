@@ -11,11 +11,13 @@ import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Trophy } from 'lucide-react'
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
 
 export function RankingsTable() {
-  const [selectedCriteria, setSelectedCriteria] = useState<string>('')
+  const searchParams = useSearchParams()
+  const [selectedCriteria, setSelectedCriteria] = useState<string>(searchParams.get('criteria') ?? '')
 
   const { data: criteriaData, isLoading: loadingCriteria } = useQuery({
     queryKey: queryKeys.criteria.list(),

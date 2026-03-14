@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
 import { listProjects } from '@/lib/api/projects'
@@ -15,6 +16,7 @@ import { StatusBadge } from '@/components/ui/Badge'
 type Step = 'select-projects' | 'select-criteria'
 
 export function ScoreWizard() {
+  const router = useRouter()
   const [step, setStep] = useState<Step>('select-projects')
   const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set())
   const [selectedCriteria, setSelectedCriteria] = useState<string>('')
@@ -52,6 +54,7 @@ export function ScoreWizard() {
   async function handleScore() {
     if (!selectedCriteria || selectedProjects.size === 0) return
     await score({ project_ids: Array.from(selectedProjects), criteria_set_id: selectedCriteria })
+    router.push(`/judge/rankings?criteria=${selectedCriteria}`)
   }
 
   return (

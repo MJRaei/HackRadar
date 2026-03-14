@@ -35,11 +35,13 @@ export function useScoreMutation() {
   }, [mutation.isPending])
 
   function score(data: ScoreRequest) {
-    return toast.promise(mutation.mutateAsync(data), {
+    const promise = mutation.mutateAsync(data)
+    toast.promise(promise, {
       loading: `Scoring ${data.project_ids.length} project(s)… this may take a few minutes`,
       success: (scores) => `Scored ${scores.length} project(s) successfully`,
       error: (err: Error) => err.message,
     })
+    return promise
   }
 
   return { score, ...mutation }
