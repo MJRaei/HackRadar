@@ -42,6 +42,14 @@ export function CategorizationPanel() {
     })
   }
 
+  function toggleAll() {
+    if (selectedProjects.size === indexedProjects.length) {
+      setSelectedProjects(new Set())
+    } else {
+      setSelectedProjects(new Set(indexedProjects.map((p) => p.id)))
+    }
+  }
+
   function handleCategorize() {
     const categories = categoryHints
       .split(',')
@@ -72,6 +80,18 @@ export function CategorizationPanel() {
           <p className="text-sm text-zinc-500 dark:text-zinc-400 p-6 text-center">
             No indexed projects yet.
           </p>
+        )}
+        {!isLoading && indexedProjects.length > 0 && (
+          <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+            <input
+              type="checkbox"
+              checked={selectedProjects.size === indexedProjects.length}
+              ref={(el) => { if (el) el.indeterminate = selectedProjects.size > 0 && selectedProjects.size < indexedProjects.length }}
+              onChange={toggleAll}
+              className="rounded border-zinc-300 dark:border-zinc-600 text-violet-600 focus:ring-violet-500"
+            />
+            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Select all</span>
+          </label>
         )}
         {indexedProjects.map((p) => (
           <label
