@@ -18,6 +18,7 @@ import { Spinner } from '@/components/ui/Spinner'
 import { ScoreBar } from '@/components/ui/ScoreBar'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { formatDate, isTerminal } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -172,10 +173,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3">
             README
           </h2>
-          <Card className="p-4">
-            <pre className="text-xs text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap font-mono leading-relaxed overflow-auto max-h-96">
-              {project.readme}
-            </pre>
+          <Card className="p-4 overflow-auto max-h-96">
+            <div className="prose prose-sm prose-zinc dark:prose-invert max-w-none">
+              <ReactMarkdown>{project.readme}</ReactMarkdown>
+            </div>
           </Card>
         </div>
       )}
