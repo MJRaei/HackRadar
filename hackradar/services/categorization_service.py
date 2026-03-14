@@ -10,7 +10,7 @@ import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hackradar.agents.categorization_agent import CategorizationAgent
+from hackradar.agents.categorization import CategorizationAgent
 from hackradar.config import get_settings
 from hackradar.repositories.category_repo import CategoryRepository
 from hackradar.repositories.project_repo import ProjectRepository
