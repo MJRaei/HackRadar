@@ -84,7 +84,9 @@ class ProjectService:
             summary=data.summary,
             status=ProjectStatus.PENDING,
         )
-        return await self._repo.save(project)
+        saved = await self._repo.save(project)
+        await self._repo._session.commit()
+        return saved
 
     async def clone_and_index(self, project_id: str, ingestion_service: "IngestionService") -> Project:
         """
