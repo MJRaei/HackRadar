@@ -10,7 +10,7 @@ import { Spinner } from '@/components/ui/Spinner'
 import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Trophy } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
@@ -23,6 +23,12 @@ export function RankingsTable() {
     queryKey: queryKeys.criteria.list(),
     queryFn: () => listCriteriaSets(),
   })
+
+  useEffect(() => {
+    if (!selectedCriteria && criteriaData?.items.length) {
+      setSelectedCriteria(criteriaData.items[0].id)
+    }
+  }, [criteriaData, selectedCriteria])
 
   const { data: rankings, isLoading: loadingRankings } = useQuery({
     queryKey: queryKeys.rankings(selectedCriteria),
