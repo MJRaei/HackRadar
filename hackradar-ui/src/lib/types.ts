@@ -93,3 +93,14 @@ export interface CategorizationResponse {
   assignments: ProjectCategoryAssignment[]
   categories_created: string[]
 }
+
+export interface BulkUploadSkipped {
+  url: string
+  reason: string
+}
+
+export interface BulkUploadResponse {
+  queued: ProjectResponse[]
+  skipped: BulkUploadSkipped[]
+  total_found: number
+}

@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { ProjectCreate, ProjectListResponse, ProjectResponse } from '../types'
+import type { BulkUploadResponse, ProjectCreate, ProjectListResponse, ProjectResponse } from '../types'
 
 export async function createProject(data: ProjectCreate): Promise<ProjectResponse> {
   const res = await apiClient.post<ProjectResponse>('/api/v1/projects', data)
@@ -20,4 +20,13 @@ export async function getProject(id: string): Promise<ProjectResponse> {
 
 export async function deleteProject(id: string): Promise<void> {
   await apiClient.delete(`/api/v1/projects/${id}`)
+}
+
+export async function bulkUploadProjects(file: File): Promise<BulkUploadResponse> {
+  const form = new FormData()
+  form.append('file', file)
+  const res = await apiClient.post<BulkUploadResponse>('/api/v1/projects/bulk-upload', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return res.data
 }

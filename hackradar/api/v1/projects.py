@@ -1,10 +1,12 @@
 import asyncio
 import logging
+from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Query, UploadFile, status
 
-from hackradar.api.deps import get_ingestion_service, get_project_service
-from hackradar.schemas.project import ProjectCreate, ProjectListResponse, ProjectResponse
+from hackradar.api.deps import get_bulk_upload_service, get_ingestion_service, get_project_service
+from hackradar.schemas.project import BulkUploadResponse, BulkUploadSkipped, ProjectCreate, ProjectListResponse, ProjectResponse
+from hackradar.services.bulk_upload import BulkUploadService
 from hackradar.services.ingestion_service import IngestionService
 from hackradar.services.project_service import ProjectService
 
@@ -62,6 +64,63 @@ async def get_project(
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
     return ProjectResponse.model_validate(project)
+
+
+_ALLOWED_EXTENSIONS = {".txt", ".csv"}
+_MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
+
+
+@router.post(
+    "/bulk-upload",
+    response_model=BulkUploadResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def bulk_upload_projects(
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+    bulk_upload_service: BulkUploadService = Depends(get_bulk_upload_service),
+    ingestion_service: IngestionService = Depends(get_ingestion_service),
+) -> BulkUploadResponse:
+    """
+    Upload a .txt or .csv file containing GitHub repository URLs.
+
+    Each URL found in the file is queued as a new project (status=pending).
+    Duplicate URLs are skipped and reported in the response.
+    """
+    extension = Path(file.filename or "").suffix.lower()
+    if extension not in _ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unsupported file type '{extension}'. Upload a .txt or .csv file.",
+        )
+
+    raw = await file.read()
+    if len(raw) > _MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="File exceeds the 5 MB limit.",
+        )
+
+    try:
+        content = raw.decode("utf-8", errors="replace")
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Could not read file: {exc}",
+        )
+
+    result = await bulk_upload_service.process(
+        file_content=content,
+        file_extension=extension,
+        background_tasks=background_tasks,
+        ingestion_service=ingestion_service,
+    )
+
+    return BulkUploadResponse(
+        queued=[ProjectResponse.model_validate(p) for p in result.queued],
+        skipped=[BulkUploadSkipped(url=s.url, reason=s.reason) for s in result.skipped],
+        total_found=result.total_found,
+    )
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)

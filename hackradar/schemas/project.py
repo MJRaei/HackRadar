@@ -34,3 +34,14 @@ class ProjectResponse(BaseModel):
 class ProjectListResponse(BaseModel):
     items: list[ProjectResponse]
     total: int
+
+
+class BulkUploadSkipped(BaseModel):
+    url: str
+    reason: str
+
+
+class BulkUploadResponse(BaseModel):
+    queued: list[ProjectResponse]
+    skipped: list[BulkUploadSkipped]
+    total_found: int
