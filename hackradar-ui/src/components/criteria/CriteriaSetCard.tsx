@@ -3,10 +3,34 @@ import { Card } from '@/components/ui/Card'
 import { formatDate } from '@/lib/utils'
 import type { CriteriaSetResponse } from '@/lib/types'
 
-export function CriteriaSetCard({ set }: { set: CriteriaSetResponse }) {
+interface CriteriaSetCardProps {
+  set: CriteriaSetResponse
+  selected?: boolean
+  onToggle?: (id: string) => void
+}
+
+export function CriteriaSetCard({ set, selected, onToggle }: CriteriaSetCardProps) {
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow group">
-      <Link href={`/criteria/${set.id}`} className="block">
+    <Card className={`p-4 hover:shadow-md transition-shadow group relative${selected ? ' ring-2 ring-violet-500 dark:ring-violet-400' : ''}`}>
+      {onToggle && (
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(set.id) }}
+          aria-label={selected ? 'Deselect' : 'Select'}
+          className={`absolute top-3 left-3 z-10 w-4 h-4 rounded border transition-all flex items-center justify-center
+            ${selected
+              ? 'bg-violet-600 border-violet-600 opacity-100'
+              : 'bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-600 opacity-0 group-hover:opacity-100'
+            }`}
+        >
+          {selected && (
+            <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
+              <path d="M1.5 5l2.5 2.5 4.5-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+        </button>
+      )}
+
+      <Link href={`/criteria/${set.id}`} className={`block${onToggle ? ' pl-6' : ''}`}>
         <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors mb-1">
           {set.name}
         </h3>
