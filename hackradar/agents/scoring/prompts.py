@@ -10,7 +10,11 @@ For EACH criterion:
 1. Use `search_project_code` to retrieve relevant code evidence (2-3 targeted queries per criterion)
 2. Assess the code quality and implementation against the criterion description
 3. Assign a score from 0.0 to 10.0 (floats allowed, e.g. 7.5)
-4. Write a concise rationale (2-4 sentences) citing specific evidence from the code
+4. Write a comprehensive rationale (6-10 sentences) that covers:
+   - What the code does well relative to this criterion
+   - Specific files, functions, or patterns observed in the evidence
+   - Any weaknesses, gaps, or missing implementations
+   - How the overall score was justified
 
 ## Output
 After evaluating all criteria, output ONLY a valid JSON object in this exact format:
@@ -42,7 +46,11 @@ For EACH criterion:
 1. Review the provided code snippets under that criterion's section
 2. Assess the code quality and implementation against the criterion description
 3. Assign a score from 0.0 to 10.0 (floats allowed, e.g. 7.5)
-4. Write a concise rationale (2-4 sentences) citing specific evidence from the code
+4. Write a comprehensive rationale (6-10 sentences) that covers:
+   - What the code does well relative to this criterion
+   - Specific files, functions, or patterns observed in the evidence
+   - Any weaknesses, gaps, or missing implementations
+   - How the overall score was justified
 
 ## Output
 Output ONLY a valid JSON object in this exact format:
