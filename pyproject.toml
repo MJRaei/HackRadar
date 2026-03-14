@@ -1,0 +1,64 @@
+[project]
+name = "hackradar"
+version = "0.1.0"
+description = "Hackathon project judging system with RAG-powered scoring and categorization"
+requires-python = ">=3.10"
+dependencies = [
+    # Web framework
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    # Database
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    "aiosqlite>=0.20.0",
+    # Validation / settings
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    # Google ADK
+    "google-adk>=0.5.0",
+    # LlamaIndex core + integrations
+    "llama-index>=0.11.0",
+    "llama-index-vector-stores-qdrant>=0.3.0",
+    "llama-index-embeddings-huggingface>=0.3.0",
+    # Qdrant client
+    "qdrant-client>=1.10.0",
+    # Sentence transformers (allenai-specter)
+    "sentence-transformers>=3.0.0",
+    "torch>=2.0.0",
+    # Git cloning
+    "gitpython>=3.1.40",
+    # HTTP client (for GitHub README fetch)
+    "httpx>=0.27.0",
+    # Async support
+    "anyio>=4.0.0",
+    "python-dotenv>=1.2.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+ignore_missing_imports = true
