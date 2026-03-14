@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FolderKanban, ListChecks, Zap, Trophy, Tags, Moon, Sun, Radar } from 'lucide-react'
+import { FolderKanban, ListChecks, Zap, Trophy, Tags, Moon, Sun, Radar, LayoutDashboard } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/projects', label: 'Projects', icon: FolderKanban },
   { href: '/criteria', label: 'Criteria', icon: ListChecks },
   { href: '/judge/score', label: 'Score', icon: Zap },
