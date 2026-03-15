@@ -23,16 +23,14 @@ from hackradar.agents.scoring.tools import (
     format_project_info,
     parse_scoring_output,
 )
-from hackradar.agents.scoring.web_search import (
-    google_search,
-    prefetch_similar_projects,
-)
+from hackradar.agents.strategies.base import Strategy
+from hackradar.agents.tools.web_search import google_search, prefetch_similar_projects
 from hackradar.rag.tools import make_retrieval_tool
 
 logger = logging.getLogger(__name__)
 
 
-class ToolCallStrategy:
+class ToolCallStrategy(Strategy):
     """Scoring via LLM tool calls. Requires function-calling support."""
 
     async def run(
@@ -63,7 +61,7 @@ class ToolCallStrategy:
         return parse_scoring_output(result.text, criteria, project_id)
 
 
-class RAGPrefetchStrategy:
+class RAGPrefetchStrategy(Strategy):
     """Scoring via pre-fetched code context. Works with any LLM backend."""
 
     async def run(

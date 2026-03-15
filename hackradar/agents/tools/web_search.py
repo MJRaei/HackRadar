@@ -1,5 +1,5 @@
 """
-Google Custom Search tool for scoring agents.
+Google Custom Search tool for agents.
 
 Provides:
 - `google_search`: a Railtracks function_node the agent can call at its discretion.
