@@ -140,46 +140,6 @@ Open [http://localhost:3000](http://localhost:3000) for the web UI, or [http://l
 
 ---
 
-## API Reference
-
-All endpoints are prefixed with `/api/v1`. Full OpenAPI docs available at `/docs`.
-
-### Projects
-
-| Method | Endpoint | Description |
-| ------ | -------- | ----------- |
-| `POST` | `/api/v1/projects` | Create a project from a GitHub URL |
-| `GET` | `/api/v1/projects` | List all projects |
-| `GET` | `/api/v1/projects/{id}` | Get project details |
-| `DELETE` | `/api/v1/projects/{id}` | Delete a project |
-| `POST` | `/api/v1/projects/bulk-upload` | Bulk upload projects via CSV/TXT |
-
-### Criteria
-
-| Method | Endpoint | Description |
-| ------ | -------- | ----------- |
-| `POST` | `/api/v1/criteria` | Create a criteria set |
-| `GET` | `/api/v1/criteria` | List all criteria sets |
-| `GET` | `/api/v1/criteria/{id}` | Get a criteria set |
-| `DELETE` | `/api/v1/criteria/{id}` | Delete a criteria set |
-
-### Judging
-
-| Method | Endpoint | Description |
-| ------ | -------- | ----------- |
-| `POST` | `/api/v1/judge/score` | Score projects against a criteria set |
-| `GET` | `/api/v1/judge/score/{project_id}` | Get scores for a project |
-| `GET` | `/api/v1/judge/rankings` | Get ranked projects by score |
-| `POST` | `/api/v1/judge/categorize` | Categorize projects |
-
-### Health
-
-| Method | Endpoint | Description |
-| ------ | -------- | ----------- |
-| `GET` | `/health` | Health check |
-
----
-
 ## Project Structure
 
 ```
