@@ -37,6 +37,7 @@ export function ConfirmDialog({
       ref={ref}
       onCancel={onCancel}
       className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl p-0 max-w-sm w-full backdrop:bg-zinc-950/40 backdrop:backdrop-blur-sm"
+      style={{ margin: 'auto' }}
     >
       <div className="p-6">
         <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">{title}</h2>
