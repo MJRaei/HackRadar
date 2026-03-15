@@ -9,6 +9,7 @@ Responsibilities:
 - Update project status throughout
 """
 
+import asyncio
 import logging
 import shutil
 from pathlib import Path
@@ -112,7 +113,8 @@ class ProjectService:
             await session.commit()
             try:
                 logger.info("Cloning %s → %s", project.github_url, local_path)
-                _clone_repo(project.github_url, local_path)
+                loop = asyncio.get_event_loop()
+                await loop.run_in_executor(None, _clone_repo, project.github_url, local_path)
                 _strip_git_dir(local_path)
             except GitCommandError as exc:
                 project.status = ProjectStatus.FAILED
