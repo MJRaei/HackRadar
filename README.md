@@ -36,12 +36,9 @@
 
 ## How It Works
 
-```
-┌─────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌────────────┐
-│  Submit URL  │────▶│  Clone Repo  │────▶│  Index Code  │────▶│  AI Scoring  │────▶│  Rankings  │
-│  (GitHub)    │     │  & Extract   │     │  (Qdrant)    │     │  (per-criterion)   │  & Export  │
-└─────────────┘     └──────────────┘     └──────────────┘     └──────────────┘     └────────────┘
-```
+<p align="center">
+  <img src="docs/workflow.png" alt="HackRadar Workflow" width="800">
+</p>
 
 1. **Ingest** — GitHub repos are cloned and source code is split into chunks using tree-sitter-aware code splitting.
 2. **Index** — Code chunks are embedded using `allenai-specter` and stored in per-project Qdrant collections.
