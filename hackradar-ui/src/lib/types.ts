@@ -50,9 +50,15 @@ export interface CriteriaSetListResponse {
   total: number
 }
 
+export interface CriterionScoreReference {
+  title: string
+  url: string
+}
+
 export interface CriterionScore {
   score: number
   rationale: string
+  references?: CriterionScoreReference[]
 }
 
 export interface ScoreRequest {

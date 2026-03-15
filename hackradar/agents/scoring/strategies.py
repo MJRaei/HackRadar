@@ -1,8 +1,11 @@
 """
 Two scoring strategies for different LLM backends.
 
-- ToolCallStrategy:     model uses `search_project_code` tool calls (Gemini, OpenAI).
+- ToolCallStrategy:     model uses `search_project_code` and `google_search` tool calls
+                        (Gemini, OpenAI). The agent decides when to invoke each tool.
 - RAGPrefetchStrategy:  code evidence is pre-fetched and injected into the prompt.
+                        Web search results are always pre-fetched and injected; the LLM
+                        decides which criteria benefit from them.
                         Used for endpoints that don't support function calling (e.g. GPT-OSS).
 """
 
@@ -19,6 +22,10 @@ from hackradar.agents.scoring.tools import (
     format_criteria,
     format_project_info,
     parse_scoring_output,
+)
+from hackradar.agents.scoring.web_search import (
+    google_search,
+    prefetch_similar_projects,
 )
 from hackradar.rag.tools import make_retrieval_tool
 
@@ -40,7 +47,7 @@ class ToolCallStrategy:
 
         agent = rt.agent_node(
             name="scoring_agent",
-            tool_nodes=[retrieval_tool],
+            tool_nodes=[retrieval_tool, google_search],
             llm=model,
             system_message=SCORING_SYSTEM_PROMPT,
         )
@@ -69,6 +76,12 @@ class RAGPrefetchStrategy:
         project_id = project.get("id", "unknown")
         code_context = self._prefetch(criteria, retriever, project_id)
 
+        query = (
+            f"{project.get('name', '')} {project.get('summary') or ''} "
+            "similar projects open source"
+        ).strip()
+        web_section = await prefetch_similar_projects(query)
+
         agent = rt.agent_node(
             name="scoring_agent",
             tool_nodes=[],
@@ -80,8 +93,12 @@ class RAGPrefetchStrategy:
             f"## Project to Evaluate\n\n{format_project_info(project)}\n\n"
             f"## Judging Criteria\n\n{format_criteria(criteria)}\n\n"
             f"## Retrieved Code Evidence\n\n{code_context}\n\n"
-            "Please evaluate this project against all criteria and return the JSON result."
         )
+
+        if web_section:
+            user_message += f"## Similar Projects Found Online\n\n{web_section}\n\n"
+
+        user_message += "Please evaluate this project against all criteria and return the JSON result."
 
         result = await rt.call(agent, user_message)
         logger.debug("Raw scoring output for %s:\n%s", project_id, result.text)

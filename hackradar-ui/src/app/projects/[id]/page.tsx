@@ -158,6 +158,22 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                         {cs.rationale}
                       </p>
+                      {cs.references && cs.references.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1">
+                          {cs.references.map((ref) => (
+                            <a
+                              key={ref.url}
+                              href={ref.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-violet-600 dark:text-violet-400 hover:underline"
+                            >
+                              {ref.title}
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

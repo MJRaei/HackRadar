@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     # Storage
     repos_base_dir: str = "./data/repos"
 
+    # Google Custom Search (for novelty/innovation criterion scoring)
+    google_search_api_key: str = ""
+    google_search_engine_id: str = ""
+
 
 @lru_cache
 def get_settings() -> Settings:

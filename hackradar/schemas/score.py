@@ -3,9 +3,15 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class CriterionScoreReference(BaseModel):
+    title: str
+    url: str
+
+
 class CriterionScore(BaseModel):
     score: float  # 0.0 – 10.0
     rationale: str
+    references: list[CriterionScoreReference] = []
 
 
 class ScoreRequest(BaseModel):
