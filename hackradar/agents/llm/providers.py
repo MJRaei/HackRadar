@@ -24,7 +24,7 @@ from typing import Any
 
 import railtracks as rt
 
-from hackradar.agents.llm import OpenAICompatibleLLM
+from hackradar.agents.llm.openai_compatible import OpenAICompatibleLLM
 
 logger = logging.getLogger(__name__)
 

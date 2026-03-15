@@ -18,7 +18,7 @@ from hackradar.agents.scoring.prompts import (
     SCORING_SYSTEM_PROMPT,
     SCORING_SYSTEM_PROMPT_NO_TOOLS,
 )
-from hackradar.agents.scoring.tools import (
+from hackradar.agents.scoring.helpers import (
     format_criteria,
     format_project_info,
     parse_scoring_output,

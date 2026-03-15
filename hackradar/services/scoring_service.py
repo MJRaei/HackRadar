@@ -14,7 +14,7 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from qdrant_client import QdrantClient
 
-from hackradar.agents.models import create_model_from_settings
+from hackradar.agents.llm import create_model_from_settings
 from hackradar.agents.scoring import ScoringAgent
 from hackradar.config import get_settings
 from hackradar.models.score import Score

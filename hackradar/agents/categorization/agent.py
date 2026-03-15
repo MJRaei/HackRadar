@@ -28,7 +28,7 @@ from hackradar.agents.categorization.prompts import (
     CATEGORIZATION_SYSTEM_PROMPT,
     PREDEFINED_CATEGORIES_INSTRUCTIONS,
 )
-from hackradar.agents.categorization.tools import (
+from hackradar.agents.categorization.helpers import (
     format_projects_input,
     parse_categorization_output,
 )
