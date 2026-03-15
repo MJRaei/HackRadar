@@ -7,6 +7,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/node-18%2B-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node 18+">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License">
   <img src="https://img.shields.io/badge/status-alpha-orange?style=flat-square" alt="Alpha">
   <img src="https://img.shields.io/badge/LLM-Gemini%20%7C%20OpenAI-4285F4?style=flat-square&logo=google&logoColor=white" alt="Multi-LLM">
   <img src="https://img.shields.io/badge/vector%20db-Qdrant-DC382D?style=flat-square&logo=qdrant&logoColor=white" alt="Qdrant">
@@ -215,4 +216,4 @@ alembic upgrade head
 
 ## License
 
-This project is not yet licensed. All rights reserved.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
